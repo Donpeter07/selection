@@ -18,8 +18,13 @@ function FormData({item}) {
             <TableCell>Email</TableCell>
             <TableCell>Password</TableCell>
             <TableCell>Address</TableCell>
-            <TableCell>contact</TableCell>
+            <TableCell>Contact</TableCell>
+            <TableCell>Country</TableCell>
+            <TableCell>Gender</TableCell>
             <TableCell>Qualification</TableCell>
+            <TableCell>Job-description</TableCell>
+            <TableCell>DOB</TableCell>
+            <TableCell>Work Experience</TableCell>
             
           </TableHead>
           <TableBody style={{textAlign:"center",backgroundColor:"gray",color:"white"}}>
@@ -30,7 +35,12 @@ function FormData({item}) {
               <TableCell>{d.password}</TableCell>
               <TableCell>{d.address}</TableCell>
               <TableCell>{d.contact}</TableCell>
+              <TableCell>{d.country}</TableCell>
+              <TableCell>{d.gender}</TableCell>
               <TableCell>{d.qualification}</TableCell>
+              <TableCell>{d.description}</TableCell>
+              <TableCell>{d.dob}</TableCell>
+              {/* <TableCell>{d.date}</TableCell> */}
               </>
             ))}
             

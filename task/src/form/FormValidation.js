@@ -1,18 +1,28 @@
 import * as React from "react";
 import './FormValidation.css';
-import { useState} from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { IMaskInput, PhoneInput } from "react-imask";
+import { IMaskInput } from "react-imask";
 import { PropTypes } from "prop-types";
 import { Avatar, Select } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
 import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+// import validator from 'validator'
 import {
     FormControl,
     FormControlLabel,
@@ -25,6 +35,8 @@ import {
     RadioGroup,
     Grid,
 } from "@mui/material";
+// toast.configure()   
+
 
 const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
     const { onChange, ...other } = props;
@@ -47,36 +59,83 @@ TextMaskCustom.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
+// function createData(name, calories, fat, carbs, protein) {
+//     return { name, calories, fat, carbs, protein };
+// }
 
-function FormValidation({fetchData}) {
+// const rows = [
+//     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+//     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+//     createData('Eclair', 262, 16.0, 24, 6.0),
+//     createData('Cupcake', 305, 3.7, 67, 4.3),
+//     createData('Gingerbread', 356, 16.0, 49, 3.9),
+// ];
+
+
+function FormValidation({ fetchData }) {
 
     let navigate = useNavigate()
 
     const [value, setValue] = React.useState([null, null]);
-    
+    // const [msg,setMsg] = useState('')
+    const [emailError, setEmailError] = useState(<span style={{ color: "red", fontSize: '12px' }}>required field*</span>)
+
+    const emailValidation = () => {
+        const exp = /\S+@\S+\.\S+/
+        if (exp.test(allValues.email)) {
+            setEmailError('')
+        } else if (!exp.test(allValues.email)) {
+            setEmailError(<span style={{ color: "red", fontSize: '12px' }}>Invalid email</span>)
+        }
+
+
+        // if (validator.isEmail(allValues.email)) {
+        //     setEmailError("valid email")
+        // } else {
+        //     setEmailError("enter valid email")
+        // }
+
+        // const regEx = /[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+(?:\. [a-zA-Z0-9-]+)*$/
+        // if (regEx.test(allValues.email))  {
+        //     setMsg("email is valid")
+        // } else if  (!regEx.test(allValues.email) && allValues.email!= '') {
+        //     setMsg("email is invalid")
+        // } else {
+        //     setMsg('');
+        // }
+    }
+
     const [allValues, setAllValues] = useState([{
-        name:"",
-        email:"",
-        address:"",
-        password:"",       
-        contact:"(100) 000-0000",
-        country:"",
-        qualification:"",   
-        dob:"",
-        description:"",
-        date:{value},
+        name: "",
+        email: "",
+        address: "",
+        password: "",
+        contact: "+91(100) 000-0000",
+        country: "",
+        gender: "",
+        qualification: "",
+        dob: "",
+        description: "",
+        date: "",
+        // wrkexp:""
     }])
-    
-   
+    const [wrkExp, setWrkExp] = useState([{
+        desig:{desig:"",joining:"",resign:""},
+        // joining:"",
+        // resign:"",
+    }])
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(allValues.name && allValues.email && allValues.password){
+        allValues.date = { value }
+        emailValidation()
+        if (allValues.name && allValues.email && allValues.address && allValues.password && allValues.contact && allValues.country && allValues.gender && allValues.qualification && allValues.description && allValues.date) {
             fetchData(allValues)
             navigate('/formdata')
             // window.location.href="/formdata"
             // console.log(allValues.name,allValues.email,allValues.password);
-        }else {
-            alert('invalid data is empty')
+        } else {
+            alert('invalid!!!! missing data')
         }
     };
 
@@ -87,26 +146,34 @@ function FormValidation({fetchData}) {
         });
     };
     // console.log(allValues.password);
+    const handleData = (e)=> {
+        setWrkExp({
+            ...wrkExp,[e.target.name]: e.target.value,
+        })
+    }
+    console.log(wrkExp);
+    // const handleClick 
 
-    
 
     // const buttonClicked= (name,email)=> {
     //     if (name == '' & email == '') {
     //         alert('values are empty')
     //     }else
     //     alert('values are added',name ,email)
-        
+
     // }
 
     return (
         <div>
-            <Container>
-                <Box component="form"  onSubmit={handleSubmit} style={{ border: "2px solid red", padding: 20, }}>
-                    <div style={{display:'flex',}}>
+            <Container style={{ backgroundColor: "gray", padding: '100px' }}>
+                <Box component="form" onSubmit={handleSubmit} style={{ border: "2px solid red", padding: 20, backgroundColor: "white" }}>
+                    <div style={{ display: 'flex', }}>
                         <Avatar>D</Avatar>
                         <Typography variant="h6" marginLeft={2}>User-name</Typography>
                     </div>
                     <h2 style={{ textAlign: "center" }}>Registration Form</h2>
+
+
                     <Grid container spacing={2} >
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -118,15 +185,15 @@ function FormValidation({fetchData}) {
                                 label="Name"
                                 value={allValues.name}
                                 onChange={handleChange}
-                                error={allValues.name ? false: true}
-                              
+                                error={allValues.name ? false : true}
+
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 fullWidth
-                                required
+                                isRequired
                                 id="email"
                                 label="Email Address"
                                 name="email"
@@ -135,6 +202,8 @@ function FormValidation({fetchData}) {
                                 error={allValues.email ? false : true}
                                 autoFocus
                             />
+                            {emailError}
+                            {/* {msg} */}
                         </Grid>
                         <Grid item xs={12} sm={6} >
                             <TextField
@@ -171,6 +240,7 @@ function FormValidation({fetchData}) {
                                 Contact-Number
                             </InputLabel>
                             <Input
+                                variant='contained'
                                 value={allValues.contact}
                                 onChange={handleChange}
                                 name="contact"
@@ -178,21 +248,37 @@ function FormValidation({fetchData}) {
                                 inputComponent={TextMaskCustom}
                             />
                         </Grid>
-                        <Grid  xs={12} sm={6}>
-                            <FormControl fullWidth>
+                        <Grid xs={12} sm={6}>
+
+                            {/* <FormControl fullWidth>
                                 <InputLabel id="select-input">Country</InputLabel>
                                 <Select
                                     // margin='normal'
                                     label="countries"
                                     name="country"
+                                    multiline
                                     onChange={handleChange}
                                     value={allValues.country}
                                 >
-                                    <MenuItem value='india'>INDIA</MenuItem>
-                                    <MenuItem value='australia'>AUSTRALIA</MenuItem>
-                                    <MenuItem value='canada'>CANADA</MenuItem>
+                                    <MenuItem value='India'>INDIA</MenuItem>
+                                    <MenuItem value='Australia'>AUSTRALIA</MenuItem>
+                                    <MenuItem value='Canada'>CANADA</MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
+                            <Autocomplete
+                                multiple
+                                id="tags-outlined"
+                                options={top100Films}
+                                getOptionLabel={(option) => option.title}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Qualification"
+                                        placeholder="Qualification"
+                                    />
+                                )}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControl >
@@ -202,20 +288,21 @@ function FormValidation({fetchData}) {
                                 <RadioGroup
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
-                                    name="row-radio-buttons-group"
+                                    name="gender"
+                                    onChange={handleChange}
                                 >
                                     <FormControlLabel
-                                        value="female"
+                                        value="Female"
                                         control={<Radio />}
                                         label="Female"
                                     />
                                     <FormControlLabel
-                                        value="male"
+                                        value="Male"
                                         control={<Radio />}
                                         label="Male"
                                     />
                                     <FormControlLabel
-                                        value="other"
+                                        value="Other"
                                         control={<Radio />}
                                         label="Other"
                                     />
@@ -228,8 +315,8 @@ function FormValidation({fetchData}) {
                                 label="DOB"
                                 name='dob'
                                 type="date"
-                                onChange={allValues.dob}
-                                defaultValue="2017-05-24"
+                                onChange={handleChange}
+                                value={allValues.dob}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -238,53 +325,115 @@ function FormValidation({fetchData}) {
                         <Grid>
 
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                             <FormControl fullWidth >
-                            <InputLabel id="select-input">Qualification</InputLabel>
-                            <Select
-                                // margin='normal'
-                                label="Qualification"
-                                onChange={handleChange}
-                                name='qualification'
-                                value={allValues.qualification}
-                            >
-                                <MenuItem value='highersecondary'>HIGHER SECONDARY</MenuItem>
-                                <MenuItem value='undergraduate'>UNDER-GRADUATE</MenuItem>
-                                <MenuItem value='postgraduate'>POST-GRADUATE</MenuItem>
-                            </Select>
-                        </FormControl>
-                        </Grid>
+                        {/* <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
+                                <InputLabel id="select-input">Qualification</InputLabel>
+                                <Select
+                                    // margin='normal'
+                                    label="Qualification"
+                                    onChange={handleChange}
+                                    name='qualification'
+                                    value={allValues.qualification}
+                                >
+                                    <MenuItem value='Highersecondary'>HIGHER SECONDARY</MenuItem>
+                                    <MenuItem value='Undergraduate'>UNDER-GRADUATE</MenuItem>
+                                    <MenuItem value='Postgraduate'>POST-GRADUATE</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid> */}
                         {/* <Grid item xs={12} md={9}>
                 <Select options={multiSelect}/>
               </Grid> */}
 
-                        <Grid item xs={4} md={6} >
+                        {/* <Grid item xs={4} md={6} >
                             <TextField
-                            fullWidth
+                                fullWidth
                                 name='description'
-                                label='Job-description' />
-                        </Grid>
+                                label='Job-description'
+                                value={allValues.description}
+                                onChange={handleChange} />
+                        </Grid> */}
 
-                        <Grid item xs={12} sm={6}>
-                        <LocalizationProvider
-                            dateAdapter={AdapterDateFns}
-                            localeText={{ start: 'Check-in', end: 'Check-out' }}
-                        >
-                            <DateRangePicker
-                                value={value}
-                                onChange={handleChange}
-                                renderInput={(startProps, endProps) => (
-                                    <React.Fragment>
-                                        <TextField {...startProps} />
-                                        <Box sx={{ mx: 2 }}> to </Box>
-                                        <TextField {...endProps} />
-                                    </React.Fragment>
-                                )}
-                            />
-                        </LocalizationProvider>
+                        {/* <Grid item xs={12} sm={6}>
+                            <table style={{ border: "2px solid black" }}>
+                                <tr style={{ border: "2px solid black" }}>
+                                    <th style={{ border: "2px solid black" }}>Joining</th>
+                                    <th style={{ border: "2px solid black" }}>Resign</th>
+                                    <th style={{ border: "2px solid black" }}>Designation</th>
+                                    <th style={{ border: "2px solid black" }}>Next</th>
+                                </tr>
 
+                                <tr>
+                                    <td>aug 2</td>
+                                    <td>sep 3</td>
+                                    <td>developer</td>
+                                    <td>aug 2</td>
+                                </tr>
+
+                            </table>
                         </Grid>
-                       
+                        <Grid item xs={12} md={6}>
+                                <LocalizationProvider
+                                    dateAdapter={AdapterDateFns}
+                                    localeText={{ start: 'Joining-date', end: 'Resign-date' }}
+                                >
+                                    <Typography variant="h6">Work Experience</Typography>
+                                    <DateRangePicker
+                                        value={value}
+                                        onChange={(e) => setValue(e)}
+                                        renderInput={(startProps, endProps) => (
+                                            <React.Fragment>
+                                                <TextField {...startProps} />
+                                                <Box sx={{ mx: 2 }}> to </Box>
+                                                <TextField {...endProps} />
+                                            </React.Fragment>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                           </Grid> */}
+
+
+                          <Grid item xs={12} md={12}>
+                               <Typography variant="h6">Work Experience</Typography>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Designation</TableCell>
+                                            <TableCell>Joined Date</TableCell>
+                                            <TableCell>Resigned Date</TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {/* {rows.map((row) => ( */}
+                                            <TableRow
+                                                // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                {/* <TableCell component="th" scope="row">
+                                                    {row.name}
+                                                </TableCell> */}
+
+                                                <TableCell >
+                                                    <TextField placeholder="Designation" value={wrkExp.desig} name='desig' onChange={handleData}>datrtrt</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <TextField placeholder="Joining Date" type="date" value={wrkExp.joining} name='joining' onChange={handleData} >data</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <TextField placeholder="Resigned Date" type="date" value={wrkExp.resign} name='resign' onChange={handleData}>data</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <Button variant="contained" >Add</Button>
+                                                    &nbsp;<Button variant="contained">X</Button>
+                                                    </TableCell>
+                                            </TableRow>
+                                       
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                          </Grid>
+
                         <Button
                             type="submit"
                             fullWidth
@@ -296,13 +445,17 @@ function FormValidation({fetchData}) {
                             Submit
                         </Button>
 
-
-
                     </Grid>
                 </Box>
             </Container>
         </div>
     );
 }
+const top100Films = [
+    { title: 'Higher Secondary' },
+    { title: 'Under Graduate' },
+    { title: 'Post Graduate' },
+    { title: 'Diploma' },
+];
 
 export default FormValidation;
