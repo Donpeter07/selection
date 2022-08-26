@@ -59,24 +59,12 @@ TextMaskCustom.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-// function createData(name, calories, fat, carbs, protein) {
-//     return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//     createData('Eclair', 262, 16.0, 24, 6.0),
-//     createData('Cupcake', 305, 3.7, 67, 4.3),
-//     createData('Gingerbread', 356, 16.0, 49, 3.9),
-// ];
-
-
 function FormValidation({ fetchData }) {
 
     let navigate = useNavigate()
 
     const [value, setValue] = React.useState([null, null]);
+    console.log(value);
     // const [msg,setMsg] = useState('')
     const [emailError, setEmailError] = useState(<span style={{ color: "red", fontSize: '12px' }}>required field*</span>)
 
@@ -119,11 +107,9 @@ function FormValidation({ fetchData }) {
         date: "",
         // wrkexp:""
     }])
-    const [wrkExp, setWrkExp] = useState([{
-        desig:{desig:"",joining:"",resign:""},
-        // joining:"",
-        // resign:"",
-    }])
+    const [wrkExp, setWrkExp] = useState([
+        { desig: "", joining: "", resign: "" },
+    ])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -146,11 +132,22 @@ function FormValidation({ fetchData }) {
         });
     };
     // console.log(allValues.password);
-    const handleData = (e)=> {
-        setWrkExp({
-            ...wrkExp,[e.target.name]: e.target.value,
-        })
+    const handleData = (e,index) => {
+       const {name,value} = e.target
+       const list = [...wrkExp]
+       list[index][name] = value
+       setWrkExp(list)
     }
+
+     const addExp = () => {
+        setWrkExp([...wrkExp,{desig:'',joining:"",resign:''}])
+     }
+
+     const removeExp = (index) => {
+        const list = [...wrkExp]
+        list.splice(index,1)
+        setWrkExp(list)
+     }
     console.log(wrkExp);
     // const handleClick 
 
@@ -250,7 +247,7 @@ function FormValidation({ fetchData }) {
                         </Grid>
                         <Grid xs={12} sm={6}>
 
-                            {/* <FormControl fullWidth>
+                            <FormControl fullWidth style={{ marginBottom: "6px" }}>
                                 <InputLabel id="select-input">Country</InputLabel>
                                 <Select
                                     // margin='normal'
@@ -264,7 +261,7 @@ function FormValidation({ fetchData }) {
                                     <MenuItem value='Australia'>AUSTRALIA</MenuItem>
                                     <MenuItem value='Canada'>CANADA</MenuItem>
                                 </Select>
-                            </FormControl> */}
+                            </FormControl>
                             <Autocomplete
                                 multiple
                                 id="tags-outlined"
@@ -371,30 +368,30 @@ function FormValidation({ fetchData }) {
                                 </tr>
 
                             </table>
-                        </Grid>
+                    </Grid> */}
                         <Grid item xs={12} md={6}>
-                                <LocalizationProvider
-                                    dateAdapter={AdapterDateFns}
-                                    localeText={{ start: 'Joining-date', end: 'Resign-date' }}
-                                >
-                                    <Typography variant="h6">Work Experience</Typography>
-                                    <DateRangePicker
-                                        value={value}
-                                        onChange={(e) => setValue(e)}
-                                        renderInput={(startProps, endProps) => (
-                                            <React.Fragment>
-                                                <TextField {...startProps} />
-                                                <Box sx={{ mx: 2 }}> to </Box>
-                                                <TextField {...endProps} />
-                                            </React.Fragment>
-                                        )}
-                                    />
-                                </LocalizationProvider>
-                           </Grid> */}
+                            <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                                localeText={{ start: 'Joining-date', end: 'Resign-date' }}
+                            >
+                                <Typography variant="h6">Work Experience</Typography>
+                                <DateRangePicker
+                                    value={value}
+                                    onChange={(e) => setValue(e)}
+                                    renderInput={(startProps, endProps) => (
+                                        <React.Fragment>
+                                            <TextField {...startProps} />
+                                            <Box sx={{ mx: 2 }}> to </Box>
+                                            <TextField {...endProps} />
+                                        </React.Fragment>
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
 
 
-                          <Grid item xs={12} md={12}>
-                               <Typography variant="h6">Work Experience</Typography>
+                        <Grid item xs={12} md={12}>
+                            <Typography variant="h6">Work Experience</Typography>
                             <TableContainer component={Paper}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                     <TableHead>
@@ -406,33 +403,37 @@ function FormValidation({ fetchData }) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {/* {rows.map((row) => ( */}
-                                            <TableRow
-                                                // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                                {/* <TableCell component="th" scope="row">
-                                                    {row.name}
-                                                </TableCell> */}
 
-                                                <TableCell >
-                                                    <TextField placeholder="Designation" value={wrkExp.desig} name='desig' onChange={handleData}>datrtrt</TextField>
+                                        {wrkExp.map((d, index) => (
+                                            <>
+                                                <TableRow key={index}
+                                                >
+                                                    <TableCell >
+                                                        <TextField placeholder="Designation" value={d.desig} name='desig' onChange={(e) =>handleData(e,index) }>datrtrt</TextField>
                                                     </TableCell>
-                                                <TableCell >
-                                                    <TextField placeholder="Joining Date" type="date" value={wrkExp.joining} name='joining' onChange={handleData} >data</TextField>
+                                                    <TableCell >
+                                                        <TextField placeholder="Joining Date" type="date" value={d.joining} name='joining' onChange={(e) =>handleData(e,index) } >data</TextField>
                                                     </TableCell>
-                                                <TableCell >
-                                                    <TextField placeholder="Resigned Date" type="date" value={wrkExp.resign} name='resign' onChange={handleData}>data</TextField>
+                                                    <TableCell >
+                                                        <TextField placeholder="Resigned Date" type="date" value={d.resign} name='resign' onChange={(e) =>handleData(e,index) }>data</TextField>
                                                     </TableCell>
-                                                <TableCell >
-                                                    <Button variant="contained" >Add</Button>
-                                                    &nbsp;<Button variant="contained">X</Button>
+                                                    <TableCell >
+                                                        {wrkExp.length - 1 == index &&
+                                                            // wrkExp.length < 4 &&
+                                                            (<Button variant="contained" onClick={addExp} >Add</Button>)}
+                                                        &nbsp;
+                                                        {wrkExp.length !== 1 && (<Button variant="contained" onClick={()=>removeExp(index)}>X</Button>)}
+
                                                     </TableCell>
-                                            </TableRow>
-                                       
+                                                </TableRow>
+                                            </>
+                                        ))
+                                        }
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                          </Grid>
+                        </Grid>
 
                         <Button
                             type="submit"

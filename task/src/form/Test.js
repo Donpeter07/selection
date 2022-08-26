@@ -1,11 +1,16 @@
 import React, {useState} from 'react'
+import {Grid,Typography,TableContainer,Paper,Table,TableCell,TextField,TableBody,TableHead,TableRow,Button} from '@mui/material'
 
-
-  
 
 function Test() {
+  
 
     const [serviceList, setServiceList] = useState([{ service: "" }]);
+
+    const handleChangeData = (e) => {
+
+    }
+    
     const handleServiceChange = (e, index) => {
         const { name, value } = e.target;
         const list = [...serviceList];
@@ -21,7 +26,13 @@ function Test() {
     
       const handleServiceAdd = () => {
         setServiceList([...serviceList, { service: "" }]);
-      };    
+      }; 
+         
+      const [serviceLists,setServiceLists] = useState([{service:""}])
+
+      const handleAddChange =(e,index) => {
+
+      }
 
   return (
     <div>
@@ -73,6 +84,47 @@ function Test() {
           ))}
       </div>
     </form>
+
+    <Grid item xs={12} md={12}>
+                               <Typography variant="h6">Work Experience</Typography>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Designation</TableCell>
+                                            <TableCell>Joined Date</TableCell>
+                                            <TableCell>Resigned Date</TableCell>
+                                            <TableCell></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                            <TableRow
+                                            >
+                                                <TableCell >
+                                                    <TextField placeholder="Designation" value="desig" name='desig' onChange={handleChangeData}>datrtrt</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <TextField placeholder="Joining Date" type="date" value="joining" name='joining' onChange={handleChangeData} >data</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <TextField placeholder="Resigned Date" type="date" value="resign" name='resign' onChange={handleChangeData}>data</TextField>
+                                                    </TableCell>
+                                                <TableCell >
+                                                    <Button variant="contained" >Add</Button>
+                                                    &nbsp;<Button variant="contained">X</Button>
+                                                    </TableCell>
+                                            </TableRow>
+                                       
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                          </Grid>
+
+
+
+
+
+
     </div>
   )
 }
