@@ -3,6 +3,7 @@ import { useState } from 'react';
 import './App.css';
 import FormValidation from './form';
 import FormData from './form/FormData';
+import Test from './form/Test';
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
 
   return (
     <div className="App">
-
+      {/* <Test /> */}
       <Router>
         <Routes>
           <Route path='/' element={ <FormValidation  fetchData={fetchData}/>}/>

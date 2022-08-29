@@ -22,6 +22,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 // import validator from 'validator'
 import {
     FormControl,
@@ -63,6 +64,11 @@ function FormValidation({ fetchData }) {
 
     let navigate = useNavigate()
 
+    function getWeeksAfter(date, amount) {     //datepicker
+        return date ? date.add(amount, 'week') : undefined;
+    }
+    const [values, setValues] = React.useState([null, null]);
+
     const [value, setValue] = React.useState([null, null]);
     console.log(value);
     // const [msg,setMsg] = useState('')
@@ -93,7 +99,7 @@ function FormValidation({ fetchData }) {
         // }
     }
 
-    const [allValues, setAllValues] = useState([{
+    const [allValues, setAllValues] = useState({
         name: "",
         email: "",
         address: "",
@@ -103,21 +109,24 @@ function FormValidation({ fetchData }) {
         gender: "",
         qualification: "",
         dob: "",
-        description: "",
-        date: "",
-        // wrkexp:""
-    }])
-    const [wrkExp, setWrkExp] = useState([
-        { desig: "", joining: "", resign: "" },
-    ])
+        wrkExp: [{ desig: "", joining: "", resign: "" }],
+    })
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
         allValues.date = { value }
         emailValidation()
-        if (allValues.name && allValues.email && allValues.address && allValues.password && allValues.contact && allValues.country && allValues.gender && allValues.qualification && allValues.description && allValues.date) {
+        if (
+            allValues.name
+            && allValues.email
+            && allValues.address && allValues.password && allValues.contact && allValues.country &&
+            allValues.gender
+            //   && allValues.qualification 
+        ) {
             fetchData(allValues)
             navigate('/formdata')
+            // && allValues.description && allValues.date
             // window.location.href="/formdata"
             // console.log(allValues.name,allValues.email,allValues.password);
         } else {
@@ -126,29 +135,81 @@ function FormValidation({ fetchData }) {
     };
 
     const handleChange = (event) => {
-        setAllValues({
+        if(event.target.name=="dob"  ){
+            if(event.target.value < '2020-05-11'){
+                setAllValues({
+                    ...allValues,
+                    [event.target.name]: event.target.value,
+                })
+
+            }else {
+                alert ("not eligible")
+            }
+        }  else{
+            setAllValues({
             ...allValues,
             [event.target.name]: event.target.value,
-        });
+        })
+
+        }   
     };
     // console.log(allValues.password);
-    const handleData = (e,index) => {
-       const {name,value} = e.target
-       const list = [...wrkExp]
-       list[index][name] = value
-       setWrkExp(list)
+
+
+
+    const handleExpChange = (e, index, ftype) => {
+        let expValue = allValues.wrkExp
+        expValue[index][ftype] = e.target.value
+
+        if(ftype=='resign'){
+          let joinVal=allValues.wrkExp.map(d=>d.joining) 
+          if(expValue[index]['resign'] > joinVal) {
+            expValue[index]['resign'] = e.target.value
+            setAllValues({
+                ...allValues,
+                wrkExp: expValue,
+            })
+          }else {
+            alert("Invalid entry ")
+          }
+        }
+        else {
+            setAllValues({
+                ...allValues,
+                wrkExp: expValue,
+            })
+        }
+       
+
+       
+        console.log(allValues.wrkExp);
+    };
+
+    // const handleData = (e, index) => {
+    // const { name, value } = e.target
+    // const list = [...wrkExp]
+    // list[index][name] = value
+    // setWrkExp(list)
+    // }
+
+    const addExp = () => {
+        const expValue = allValues.wrkExp
+        expValue.push({ desig: '', joining: "", resign: '' })
+        setAllValues({
+            ...allValues,
+            wrkExp: expValue,
+        });
     }
 
-     const addExp = () => {
-        setWrkExp([...wrkExp,{desig:'',joining:"",resign:''}])
-     }
+    const removeExp = (index) => {
+        const expValue = allValues.wrkExp
+        expValue.splice(index, 1)
+        setAllValues({
+            ...allValues,
+            wrkExp: expValue,
+        });
+    }
 
-     const removeExp = (index) => {
-        const list = [...wrkExp]
-        list.splice(index,1)
-        setWrkExp(list)
-     }
-    console.log(wrkExp);
     // const handleClick 
 
 
@@ -164,7 +225,7 @@ function FormValidation({ fetchData }) {
         <div>
             <Container style={{ backgroundColor: "gray", padding: '100px' }}>
                 <Box component="form" onSubmit={handleSubmit} style={{ border: "2px solid red", padding: 20, backgroundColor: "white" }}>
-                    <div style={{ display: 'flex', }}>
+                    <div style={{ display: 'flex' }}>
                         <Avatar>D</Avatar>
                         <Typography variant="h6" marginLeft={2}>User-name</Typography>
                     </div>
@@ -262,20 +323,7 @@ function FormValidation({ fetchData }) {
                                     <MenuItem value='Canada'>CANADA</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Autocomplete
-                                multiple
-                                id="tags-outlined"
-                                options={top100Films}
-                                getOptionLabel={(option) => option.title}
-                                filterSelectedOptions
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Qualification"
-                                        placeholder="Qualification"
-                                    />
-                                )}
-                            />
+                            
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControl >
@@ -312,12 +360,32 @@ function FormValidation({ fetchData }) {
                                 label="DOB"
                                 name='dob'
                                 type="date"
+                                min=''
                                 onChange={handleChange}
                                 value={allValues.dob}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                             />
+                            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateRangePicker
+                                    // disablePast
+                                    value={values}
+                                    startDate = {new Date('2020-08-08')}
+                                    endDate = {new Date('2021-08-08')}
+                                    // minDate={getWeeksAfter(value[0], 1)}
+                                    onChange={(newValue) => {
+                                        setValues(newValue);
+                                    }}
+                                    renderInput={(startProps, endProps) => (
+                                        <React.Fragment>
+                                            <TextField {...startProps} />
+                                            <Box sx={{ mx: 2 }}> to </Box>
+                                            <TextField {...endProps} />
+                                        </React.Fragment>
+                                    )}
+                                />
+                            </LocalizationProvider>  */}
                         </Grid>
                         <Grid>
 
@@ -369,7 +437,7 @@ function FormValidation({ fetchData }) {
 
                             </table>
                     </Grid> */}
-                        <Grid item xs={12} md={6}>
+                        {/* <Grid item xs={12} md={6}>
                             <LocalizationProvider
                                 dateAdapter={AdapterDateFns}
                                 localeText={{ start: 'Joining-date', end: 'Resign-date' }}
@@ -387,7 +455,7 @@ function FormValidation({ fetchData }) {
                                     )}
                                 />
                             </LocalizationProvider>
-                        </Grid>
+                        </Grid> */}
 
 
                         <Grid item xs={12} md={12}>
@@ -404,30 +472,31 @@ function FormValidation({ fetchData }) {
                                     </TableHead>
                                     <TableBody>
 
-                                        {wrkExp.map((d, index) => (
-                                            <>
-                                                <TableRow key={index}
-                                                >
-                                                    <TableCell >
-                                                        <TextField placeholder="Designation" value={d.desig} name='desig' onChange={(e) =>handleData(e,index) }>datrtrt</TextField>
-                                                    </TableCell>
-                                                    <TableCell >
-                                                        <TextField placeholder="Joining Date" type="date" value={d.joining} name='joining' onChange={(e) =>handleData(e,index) } >data</TextField>
-                                                    </TableCell>
-                                                    <TableCell >
-                                                        <TextField placeholder="Resigned Date" type="date" value={d.resign} name='resign' onChange={(e) =>handleData(e,index) }>data</TextField>
-                                                    </TableCell>
-                                                    <TableCell >
-                                                        {wrkExp.length - 1 == index &&
-                                                            // wrkExp.length < 4 &&
-                                                            (<Button variant="contained" onClick={addExp} >Add</Button>)}
-                                                        &nbsp;
-                                                        {wrkExp.length !== 1 && (<Button variant="contained" onClick={()=>removeExp(index)}>X</Button>)}
+                                        {
+                                            allValues.wrkExp.map((d, index) => (
+                                                <>
+                                                    <TableRow key={index}
+                                                    >
+                                                        <TableCell >
+                                                            <TextField placeholder="Designation" value={d.desig} name='desig' onChange={(e) => handleExpChange(e, index, "desig")}>datrtrt</TextField>
+                                                        </TableCell>
+                                                        <TableCell >
+                                                            <TextField placeholder="Joining Date" type="date" value={d.joining} name='joining' onChange={(e) => handleExpChange(e, index, "joining")} >data</TextField>
+                                                        </TableCell>
+                                                        <TableCell >
+                                                            <TextField placeholder="Resigned Date" type="date" value={d.resign} name='resign' onChange={(e) => handleExpChange(e, index, "resign")}>data</TextField>
+                                                        </TableCell>
+                                                        <TableCell >
+                                                            {d.desig && d.joining && d.resign && allValues.wrkExp.length - 1 == index &&
+                                                                allValues.wrkExp.length < 4 &&
+                                                                (<Button variant="contained" onClick={addExp} >Add</Button>)}
+                                                            &nbsp;
+                                                            {allValues.wrkExp.length !== 1 && (<Button variant="contained" onClick={() => removeExp(index)}>X</Button>)}
 
-                                                    </TableCell>
-                                                </TableRow>
-                                            </>
-                                        ))
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </>
+                                            ))
                                         }
 
                                     </TableBody>
@@ -452,11 +521,6 @@ function FormValidation({ fetchData }) {
         </div>
     );
 }
-const top100Films = [
-    { title: 'Higher Secondary' },
-    { title: 'Under Graduate' },
-    { title: 'Post Graduate' },
-    { title: 'Diploma' },
-];
+
 
 export default FormValidation;

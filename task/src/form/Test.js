@@ -1,42 +1,80 @@
-import React, {useState} from 'react'
-import {Grid,Typography,TableContainer,Paper,Table,TableCell,TextField,TableBody,TableHead,TableRow,Button} from '@mui/material'
+import React, { useState } from 'react'
+import { Grid, Typography, TableContainer, Paper, Table, TableCell, TextField, TableBody, TableHead, TableRow, Button, Autocomplete } from '@mui/material'
 
 
 function Test() {
-  
 
-    const [serviceList, setServiceList] = useState([{ service: "" }]);
+  const [value,setValue] = useState('')
 
-    const handleChangeData = (e) => {
+  const handleChange = (e) => {
+    setValue(e.target.value)
+    console.log(value);
+  }
 
-    }
-    
-    const handleServiceChange = (e, index) => {
-        const { name, value } = e.target;
-        const list = [...serviceList];
-        list[index][name] = value;
-        setServiceList(list);
-      };
-    
-      const handleServiceRemove = (index) => {
-        const list = [...serviceList];
-        list.splice(index, 1);
-        setServiceList(list);
-      };
-    
-      const handleServiceAdd = () => {
-        setServiceList([...serviceList, { service: "" }]);
-      }; 
-         
-      const [serviceLists,setServiceLists] = useState([{service:""}])
 
-      const handleAddChange =(e,index) => {
+  const top100Films = [
+    { title: 'Higher Secondary' },
+    { title: 'Under Graduate' },
+    { title: 'Post Graduate' },
+    { title: 'Diploma' },
+  ];
 
-      }
+
+  // const [serviceList, setServiceList] = useState([{ service: "" }]);
+
+  // const handleChangeData = (e) => {
+
+  // }
+
+  // const handleServiceChange = (e, index) => {
+  //     const { name, value } = e.target;
+  //     const list = [...serviceList];
+  //     list[index][name] = value;
+  //     setServiceList(list);
+  //   };
+
+  //   const handleServiceRemove = (index) => {
+  //     const list = [...serviceList];
+  //     list.splice(index, 1);
+  //     setServiceList(list);
+  //   };
+
+  //   const handleServiceAdd = () => {
+  //     setServiceList([...serviceList, { service: "" }]);
+  //   }; 
+
+  //   const [serviceLists,setServiceLists] = useState([{service:""}])
+
+  //   const handleAddChange =(e,index) => {
+
+  //   }
 
   return (
     <div>
-         <form className="App" autoComplete="off">
+      <h1>hello din</h1>
+      <Grid item xs={12} sm={6}>
+        <Autocomplete
+          multiple
+          value={value}
+          onChange={handleChange}
+          id="tags-outlined"
+          options={top100Films}
+          getOptionLabel={(option) => option.title}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Qualification"
+              placeholder="Qualification"
+            />
+          )}
+        />
+      </Grid>
+
+
+
+
+      {/* <form className="App" autoComplete="off">
       <div className="form-field">
         <label htmlFor="service">Service(s)</label>
         {serviceList.map((singleService, index) => (
@@ -118,13 +156,7 @@ function Test() {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                          </Grid>
-
-
-
-
-
-
+                          </Grid> */}
     </div>
   )
 }

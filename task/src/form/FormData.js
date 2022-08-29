@@ -21,10 +21,10 @@ function FormData({item}) {
             <TableCell>Contact</TableCell>
             <TableCell>Country</TableCell>
             <TableCell>Gender</TableCell>
-            <TableCell>Qualification</TableCell>
+            {/* <TableCell>Qualification</TableCell> */}
             <TableCell>Job-description</TableCell>
             <TableCell>DOB</TableCell>
-            <TableCell>Work Experience</TableCell>
+            {/* <TableCell>Work Experience</TableCell> */}
             
           </TableHead>
           <TableBody style={{textAlign:"center",backgroundColor:"gray",color:"white"}}>
@@ -37,7 +37,7 @@ function FormData({item}) {
               <TableCell>{d.contact}</TableCell>
               <TableCell>{d.country}</TableCell>
               <TableCell>{d.gender}</TableCell>
-              <TableCell>{d.qualification}</TableCell>
+              {/* <TableCell>{d.qualification}</TableCell> */}
               <TableCell>{d.description}</TableCell>
               <TableCell>{d.dob}</TableCell>
               {/* <TableCell>{d.date}</TableCell> */}
